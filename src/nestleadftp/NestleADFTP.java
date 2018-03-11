@@ -5,10 +5,8 @@
  */
 package nestleadftp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import libs.CompressFile;
+import libs.ConnectionFTP;
 
 /**
  *
@@ -21,13 +19,11 @@ public class NestleADFTP {
      */
     public static void main(String[] args) {
 
-        try {
-            CompressFile compressFile = new CompressFile(new File("D:\\dirprueba.zip"));
-            compressFile.zip(new File("D:\\pruebajava"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        System.out.println(CompressFile.compressEntry("D:\\pruebajava", "D:\\dirpruebaasd.zip"));
+        ConnectionFTP c = new ConnectionFTP();
+        if (c.connectTo("apps.grupobit.net", "Nestle_210226", "Ts210226X")) {
+            c.uploadFile("file.txt");
+            c.closeConnection();
         }
 
     }

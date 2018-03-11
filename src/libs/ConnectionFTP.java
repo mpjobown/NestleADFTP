@@ -5,7 +5,11 @@
  */
 package libs;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
 /**
@@ -14,34 +18,60 @@ import org.apache.commons.net.ftp.FTPClient;
  */
 public class ConnectionFTP {
 
-    public void conectarFTP() {
+    private FTPClient client;
 
-        FTPClient client = new FTPClient();
+    public boolean connectTo(String host, String user, String password) {
 
-        // Datos para conectar al servidor FTP
-        String ftp = "ftp.miservidor.com"; // También puede ir la IP
-        String user = "usuario";
-        String password = "password";
+        client = new FTPClient();
 
         try {
-            // Conactando al servidor
-            client.connect(ftp);
 
-            // Logueado un usuario (true = pudo conectarse, false = no pudo
-            // conectarse)
-            boolean login = client.login(user, password);
+            client.connect(host);
+            client.login(user, password);
 
-            System.out.println(login);
+            return true;
 
-            // Cerrando sesión
-            client.logout();
-
-            // Desconectandose con el servidor
-            client.disconnect();
-
-        } catch (IOException ioe) {
-
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            return false;
         }
 
     }
+
+    public boolean uploadFile(String fileName) {
+
+        try {
+            client.setFileType(FTP.BINARY_FILE_TYPE, FTP.BINARY_FILE_TYPE);
+            client.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+            client.enterLocalPassiveMode();
+
+            FileInputStream fileInput = new FileInputStream(fileName);
+
+            // Guardando el archivo en el servidor
+            client.storeFile(fileName, fileInput);
+
+            return true;
+
+        } catch (IOException ex) {
+            Logger.getLogger(ConnectionFTP.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+
+    }
+
+    public boolean closeConnection() {
+
+        try {
+
+            client.logout();
+            client.disconnect();
+            return true;
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+            return false;
+        }
+
+    }
+
 }
