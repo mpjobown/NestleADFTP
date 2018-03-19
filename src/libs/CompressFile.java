@@ -41,11 +41,11 @@ public class CompressFile {
             fos = new FileOutputStream(zipFile);
             zos = new ZipOutputStream(fos);
 
-            System.out.println("Output to Zip : " + zipFile);
             FileInputStream in = null;
-
+            
+            System.out.println("Compresión de archivos.");
             for (String file : fileList) {
-                System.out.println("File Added : " + file);
+                System.out.println("[..OK..]: Comprimiendo archivo: " + file);
                 ZipEntry ze = new ZipEntry(source + File.separator + file);
                 zos.putNextEntry(ze);
                 try {
@@ -58,17 +58,21 @@ public class CompressFile {
                     in.close();
                 }
             }
-
+            
             zos.closeEntry();
-            System.out.println("Folder successfully compressed");
+            System.out.println("[..OK..]: Folder comprimido satisfactoriamente.");
+            System.out.println("Ubicación del archivo: " + zipFile);
+
 
         } catch (IOException ex) {
+            System.out.println("[..OK..]: Error al comprimir el archivo " + zipFile);
             ex.printStackTrace();
             return false;
         } finally {
             try {
                 zos.close();
             } catch (IOException e) {
+                System.out.println("[..OK..]: Error al comprimir el archivo " + zipFile);
                 e.printStackTrace();
                 return false;
             }
@@ -90,7 +94,7 @@ public class CompressFile {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("[..OK..]: Error al comprimir el archivo");
             return false;
         }
         return true;
